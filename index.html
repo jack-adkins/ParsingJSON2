@@ -44,14 +44,21 @@
                     const selectedCategory = $('#category-select').val();
                     let filteredOutput = '';
     
-                    // Filter products by selected category and display only names
+                    // Filter products by selected category and display the full product details
                     data.forEach(product => {
                         if (product.categories.includes(selectedCategory)) {
-                            filteredOutput += `<div class="product-name">${product.name}</div>`;
+                            filteredOutput += `
+                                <div class="product">
+                                    <span class="name">${product.name}</span>
+                                    <span class="description">${product.description}</span>
+                                    <span class="price">Price: ${product.price}</span>
+                                    <span class="category">Categories: ${product.categories.join(', ')}</span>
+                                </div>
+                            `;
                         }
                     });
     
-                    // Display the filtered product names in the #filtered-products div
+                    // Display the filtered products in the #filtered-products div
                     $('#filtered-products').html(filteredOutput || 'No products found for this category.');
                 });
             });
