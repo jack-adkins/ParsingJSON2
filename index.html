@@ -43,7 +43,6 @@
                 });
                 $('#productsWanted').html(productInfo || 'Please Select a Valid Category');
             }
-
             /*Grabbing products from the json file*/
             $.get('products.json', function(data) {
                 const categories = new Set();
