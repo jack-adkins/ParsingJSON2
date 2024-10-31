@@ -1,67 +1,64 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Products 3</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <style>
-        .products {display: block; margin: 20px; font-family: 'Roboto', sans-serif;}
-        .product {border: 2px solid #1E90FF; background-color: #f0f8ff; display: block; padding: 20px; margin-bottom: 20px; border-radius: 8px;}
-        .product > .name {color: #003366; font-size: 24px; font-weight: bold; display: block; margin-bottom: 10px;}
-        .product > .description {color: #255882; font-size: 14px; margin-bottom: 10px; display: block;}
-        .product > .price {color: #1E90FF; font-size: 18px; font-weight: bold; margin-bottom: 15px; display: block;}
-        .product > .category {color: white; background-color: #b07ff4; font-size: 12px; padding: 5px; display: inline-block; border-radius: 4px;}
-    </style>
-</head>
-<body>
-    <h1>Select Product Category for Viewing</h1>
-    <label for="chooseCategory">Choose a category:</label>
-    <select id="chooseCategory">
-        <option value="">--Select a category--</option>
-    </select>
-    <button id="b1">Filter</button>
-    <div id="productsWanted" class="products"></div>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Products 3</title>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <style>
+            .products {display: block; margin: 20px; font-family: 'Roboto', sans-serif;}
+            .product {border: 2px solid #1E90FF; background-color: #f0f8ff; display: block; padding: 20px; margin-bottom: 20px; border-radius: 8px;}
+            .product > .name {color: #003366; font-size: 24px; font-weight: bold; display: block; margin-bottom: 10px;}
+            .product > .description {color: #255882; font-size: 14px; margin-bottom: 10px; display: block;}
+            .product > .price {color: #1E90FF; font-size: 18px; font-weight: bold; margin-bottom: 15px; display: block;}
+            .product > .category {color: white; background-color: #b07ff4; font-size: 12px; padding: 5px; display: inline-block; border-radius: 4px;}
+        </style>
+    </head>
+    <body>
+        <h1>Select Product Category for Viewing</h1>
+        <label for="chooseCategory">Choose a Category:</label>
+        <select id="chooseCategory">
+            <option value="">  </option>
+        </select>
+        <button id="b1">Filter</button>
+        <div id="productsWanted" class="products"></div>
 
-    <script>
-        // Function to filter products by selected category and display them
-        function filterProducts(data) {
-            const selectedCategory = $('#chooseCategory').val();
-            let productInfo = '';
+        <script>
+            /*Defining a function to filter and display products by category*/
+            function filterProducts(data) 
+            {
+                const selectedCategory = $('#chooseCategory').val();
+                let productInfo = '';
+                data.forEach(product => {
+                    /*Filter for the selected category then add it to the soon to be output*/
+                    if (product.categories.includes(selectedCategory)) {
+                        productInfo += `
+                            <div class="product">
+                                <span class="name">${product.name}</span>
+                                <span class="description">${product.description}</span>
+                                <span class="price">Price: ${product.price}</span>
+                                <span class="category">Categories: ${product.categories.join(', ')}</span>
+                            </div>
+                        `;
+                    }
+                });
+                $('#productsWanted').html(productInfo || 'Please Select a Valid Category');
+            }
 
-            data.forEach(product => {
-                if (product.categories.includes(selectedCategory)) {
-                    productInfo += `
-                        <div class="product">
-                            <span class="name">${product.name}</span>
-                            <span class="description">${product.description}</span>
-                            <span class="price">Price: ${product.price}</span>
-                            <span class="category">Categories: ${product.categories.join(', ')}</span>
-                        </div>
-                    `;
-                }
+            /*Grabbing products from the json file*/
+            $.get('products.json', function(data) {
+                const categories = new Set();
+                data.forEach(product => {
+                    product.categories.forEach(category => categories.add(category));
+                });
+                /*Adding categories to the dropdown menu*/
+                categories.forEach(category => {
+                    $('#chooseCategory').append(`<option value="${category}">${category}</option>`);
+                });
+                /*Link a button click to calling the above function*/
+                $('#b1').click(function() {
+                    filterProducts(data);
+                });
             });
-
-            $('#productsWanted').html(productInfo || 'Please Select a Valid Category');
-        }
-
-        // Fetch the products and set up the dropdown and event listener
-        $.get('products.json', function(data) {
-            const categories = new Set();
-
-            data.forEach(product => {
-                product.categories.forEach(category => categories.add(category));
-            });
-
-            // Populate the dropdown with categories
-            categories.forEach(category => {
-                $('#chooseCategory').append(`<option value="${category}">${category}</option>`);
-            });
-
-            // Set up the event listener for the filter button
-            $('#b1').click(function() {
-                filterProducts(data);
-            });
-        });
-    </script>        
-</body>
+        </script>        
+    </body>
 </html>
