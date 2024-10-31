@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Product List 3</title>
+        <title>Products 3</title>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <style>
             .products {display: block; margin: 20px; font-family: 'Roboto', sans-serif;}
@@ -14,52 +14,41 @@
         </style>
     </head>
     <body>
-        <h1>Filter Products by Category</h1>
-        
-        <!-- Filter Form -->
-        <label for="category-select">Choose a category:</label>
-        <select id="category-select">
+        <h1>Select Product Category for Viewing</h1>
+        <label for="chooseCategory">Choose a category:</label>
+        <select id="chooseCategory">
             <option value="">--Select a category--</option>
         </select>
-        <button id="filter-button">Filter</button>
-    
-        <!-- Display Filtered Results -->
-        <div id="filtered-products" class="products"></div>
+        <button id="b1">Filter</button>
+        <div id="productsWanted" class="products"></div>
     
         <script>
             $.get('products.json', function(data) {
-                // Extract unique categories from the data
                 const categories = new Set();
                 data.forEach(product => {
                     product.categories.forEach(category => categories.add(category));
                 });
     
-                // Populate the dropdown with unique categories
-                categories.forEach(category => {
-                    $('#category-select').append(`<option value="${category}">${category}</option>`);
-                });
-    
-                // Function to display filtered products by selected category
-                $('#filter-button').click(function() {
-                    const selectedCategory = $('#category-select').val();
-                    let filteredOutput = '';
-    
-                    // Filter products by selected category and display the full product details
+                /*Adding categories to the dropdown menu*/
+                categories.forEach(category => {$('#chooseCategory').append(`<option value="${category}">${category}</option>`);});
+                $('#b1').click(function() {
+                    const selectedCategory = $('#chooseCategory').val();
+                    let productInfo = '';
+                    /*Filter for the selected category then add it to the soon to be output*/
                     data.forEach(product => {
                         if (product.categories.includes(selectedCategory)) {
-                            filteredOutput += `
-                                <div class="product">
-                                    <span class="name">${product.name}</span>
-                                    <span class="description">${product.description}</span>
-                                    <span class="price">Price: ${product.price}</span>
-                                    <span class="category">Categories: ${product.categories.join(', ')}</span>
-                                </div>
-                            `;
+                            productInfo += `
+                            <div class="product">
+                                <span class="name">${product.name}</span>
+                                <span class="description">${product.description}</span>
+                                <span class="price">Price: ${product.price}</span>
+                                <span class="category">Categories: ${product.categories.join(', ')}</span>
+                            </div>
+                        `;
                         }
                     });
-    
-                    // Display the filtered products in the #filtered-products div
-                    $('#filtered-products').html(filteredOutput || 'No products found for this category.');
+                    /*Display desired output in the div*/
+                    $('#productsWanted').html(productInfo || 'Please Select a Valid Category');
                 });
             });
         </script>        
